@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #5d5de8, #b10b72, #9a93dc);
+            padding: 20px;
+            position: relative;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .top-bar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            background: #ff4d4d;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px #ff4d4d;
+        }
+
+        .main {
+            background-color: rgb(52, 23, 66);
+            padding: 60px 40px;
+            width: 100%;
+            max-width: 400px;
+            border: 2px solid black;
+            border-radius: 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main:hover {
+            transform: scale(1.05);
+            transition: 0.5s;
+            box-shadow: 6px 6px 15px rgb(172, 5, 232);
+        }
+
+        h2 {
+            margin-bottom: 45px;
+            color: white;
+            text-align: center;
+            font-size: 28px;
+            width: 100%;
+        }
+
+        h2:hover {
+            transform: scale(1.05);
+            transition: 0.5s;
+            box-shadow: 5px 5px 10px rgb(232, 100, 5);
+            color: rgb(56, 226, 13);
+            padding: 10px 0;
+            border-radius: 30px;
+        }
+
+        .A,
+        .B {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .B {
+            padding-top: 12px;
+            margin-top: 10px;
+        }
+
+        .comm {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px 20px;
+            font: 1em sans-serif;
+            border-radius: 10px;
+            border: none;
+        }
+
+        .comm:hover {
+            transform: scale(1.05);
+            transition: 0.5s;
+            box-shadow: 5px 5px 10px rgb(5, 232, 224);
+        }
+
+        button {
+            background: #03e9f4;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 5px;
+            color: #050801;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button:hover {
+            box-shadow: 0 0 5px #03e9f4,
+                0 0 25px #03e9f4;
+            transform: translateY(-2px);
+        }
+
+        .switch-btn {
+            background: transparent;
+            color: white;
+            margin-top: 15px;
+            font-size: 14px;
+            text-transform: none;
+            white-space: nowrap;
+            border: none;
+            cursor: pointer;
+        }
+
+        .switch-btn:hover {
+            box-shadow: none;
+            transform: none;
+        }
+
+        @media (max-width: 400px) {
+            .main {
+                padding: 40px 20px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            .switch-btn {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <div class="logo-text">SecureVote</div>
+        <a href="FirstUI.html" class="back-btn">Back</a>
+    </div>
+
+    <div class="main">
+        <h2 id="formTitle"> Voter Login</h2>
+
+        <form id="voterForm">
+            <div class="A">
+                <input class="comm" type="text" placeholder="Voter Name" required>
+            </div>
+
+            <div class="B">
+                <input class="comm" type="text" placeholder="Enter Roll Number" required>
+            </div>
+
+            <button type="submit">Enter Portal</button>
+        </form>
+
+        <button class="switch-btn" onclick="toggleForm()">
+            Don't have an account? Sign Up
+        </button>
+    </div>
+
+    <script>
+
+        const formTitle = document.getElementById("formTitle");
+        const switchBtn = document.querySelector(".switch-btn");
+        const form = document.getElementById("voterForm");
+        const inputs = document.querySelectorAll(".comm");
+
+        let isLogin = true;
+
+        function toggleForm() {
+            if (isLogin) {
+                formTitle.innerText = "Voter Sign Up";
+                switchBtn.innerText = "Already have an account? Sign In";
+            } else {
+                formTitle.innerText = "Voter Login";
+                switchBtn.innerText = "Don't have an account? Sign Up";
+            }
+            isLogin = !isLogin;
+        }
+
+        // ✅ VALID ROLL CHECK
+        function isValidRoll(roll) {
+            let num = parseInt(roll.slice(-2));
+            return roll.startsWith("23022C040") && num >= 1 && num <= 80;
+        }
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const username = inputs[0].value.trim();
+            const roll = inputs[1].value.trim();
+
+            if (!isValidRoll(roll)) {
+                alert("Invalid Roll Number ❌");
+                return;
+            }
+
+            // save current voter
+            localStorage.setItem("currentVoter", JSON.stringify({
+                name: username,
+                roll: roll
+            }));
+
+            alert("Login Successful ✅");
+            window.location.href = "VoterDashboard.html";
+        });
+
+    </script>
+
+</body>
+
+</html>

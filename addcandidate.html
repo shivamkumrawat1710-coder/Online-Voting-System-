@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Candidate</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f9;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.container{
+background:white;
+padding:30px;
+width:420px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin-bottom:15px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+background:#007bff;
+color:white;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
+}
+
+#preview{
+width:120px;
+height:120px;
+object-fit:cover;
+border-radius:8px;
+display:none;
+margin-bottom:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Candidate Request</h2>
+
+<form id="candidateForm">
+
+<input type="text" id="name" placeholder="Candidate Name" required>
+
+<input type="text" id="party" placeholder="Party Name" required>
+
+<input type="number" id="age" placeholder="Age" required>
+
+<input type="text" id="contact" placeholder="Contact Number" required maxlength="10">
+
+<input type="text" id="aadhar" placeholder="Aadhar Number" required maxlength="12">
+
+<select id="gender">
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+
+<input type="text" id="city" placeholder="city" required>
+
+<input type="file" id="photo" accept="image/*" required>
+
+<img id="preview">
+
+<button type="submit">Apply</button>
+
+</form>
+
+</div>
+
+<script>
+
+let imageData="";
+
+document.getElementById("photo").addEventListener("change",function(e){
+
+let reader=new FileReader();
+
+reader.onload=function(){
+imageData=reader.result;
+document.getElementById("preview").src=imageData;
+document.getElementById("preview").style.display="block";
+}
+
+reader.readAsDataURL(e.target.files[0]);
+
+})
+
+document.getElementById("candidateForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+let candidate={
+name:document.getElementById("name").value,
+party:document.getElementById("party").value,
+age:document.getElementById("age").value,
+contact:document.getElementById("contact").value,
+aadhar:document.getElementById("aadhar").value,
+gender:document.getElementById("gender").value,
+city:document.getElementById("city").value,
+photo:imageData
+}
+
+let requests=JSON.parse(localStorage.getItem("candidateRequests"))||[];
+
+requests.push(candidate);
+
+localStorage.setItem("candidateRequests",JSON.stringify(requests));
+
+alert("Candidate Request Sent to Admin ✅");
+
+document.getElementById("candidateForm").reset();
+
+document.getElementById("preview").style.display="none";
+
+})
+
+</script>
+
+</body>
+</html>

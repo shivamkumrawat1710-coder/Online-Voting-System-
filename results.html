@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Election Results</title>
+
+<style>
+body{
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container{
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    width: 400px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    color: white;
+}
+
+h1{margin-bottom:20px;}
+
+#countdown{
+    font-size: 48px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+#resultBtn{
+    padding: 14px 35px;
+    font-size: 18px;
+    border: none;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.3);
+    color: white;
+    cursor: not-allowed;
+}
+
+#resultBtn.active{
+    background: linear-gradient(45deg, #00c853, #64dd17);
+    cursor: pointer;
+}
+
+#results{
+    margin-top: 30px;
+    display: none;
+}
+
+.result-card{
+    background: rgba(255,255,255,0.2);
+    margin: 12px 0;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.winner{
+    border: 2px solid #00e676;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🗳 Election Countdown</h1>
+
+<div id="countdown">Loading...</div>
+
+<button id="resultBtn" disabled>View Results</button>
+
+<div id="results"></div>
+
+</div>
+
+<script>
+
+let countdownEl = document.getElementById("countdown");
+let btn = document.getElementById("resultBtn");
+let resultsDiv = document.getElementById("results");
+
+let timer;
+
+// 🔥 DIRECT ADMIN TIME (FIXED PROPERLY)
+let endTime = localStorage.getItem("endTime"); // SAME KEY AS ADMIN
+
+// ⏳ COUNTDOWN
+function updateCountdown(){
+
+    // 🔥 always latest value fetch karega
+    endTime = localStorage.getItem("endTime");
+
+    if(!endTime){
+        countdownEl.innerHTML = "Timer Not Set";
+        return;
+    }
+
+    let now = new Date().getTime();
+    let end = new Date(endTime).getTime();
+
+    let diff = end - now;
+
+    if(diff <= 0){
+        clearInterval(timer);
+
+        countdownEl.innerHTML = "Election Ended 🎉";
+
+        btn.disabled = false;
+        btn.classList.add("active");
+
+        showResults();
+        return;
+    }
+
+    let d = Math.floor(diff / (1000*60*60*24));
+    let h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    let m = Math.floor((diff % (1000*60*60)) / (1000*60));
+    let s = Math.floor((diff % (1000*60)) / 1000);
+
+    countdownEl.innerHTML = `${d}d ${h}h ${m}m ${s}s`;
+}
+
+// RUN TIMER
+timer = setInterval(updateCountdown, 1000);
+updateCountdown();
+
+
+// 🟢 SHOW RESULT (SYNC WITH ADMIN)
+function showResults(){
+
+    let votes = JSON.parse(localStorage.getItem("votes")) || {};
+    let approved = JSON.parse(localStorage.getItem("approvedCandidates")) || [];
+
+    if(approved.length === 0){
+        resultsDiv.innerHTML = "<h2>No Candidates Found</h2>";
+        resultsDiv.style.display = "block";
+        return;
+    }
+
+    let results = [];
+    approved.forEach(c=>{
+        let count = votes[c.name] || 0;
+        results.push({name:c.name, votes:count});
+    });
+
+    let maxVotes = Math.max(...results.map(r => r.votes));
+    let winners = results.filter(r => r.votes === maxVotes);
+
+    let html = "";
+
+    if(maxVotes === 0){
+        resultsDiv.innerHTML = "<h2>No votes yet</h2>";
+        resultsDiv.style.display = "block";
+        return;
+    }
+
+    if(winners.length > 1){
+        html += `<h2>🤝 Tie Between Winners</h2>`;
+    }
+
+    winners.forEach(w => {
+        html += `
+            <div class="result-card winner">
+                <h2>🏆 ${w.name}</h2>
+                <p>Total Votes: ${w.votes}</p>
+            </div>
+        `;
+    });
+
+    resultsDiv.innerHTML = html;
+    resultsDiv.style.display = "block";
+}
+
+btn.addEventListener("click", showResults);
+
+
+</script>
+
+</body>
+</html>

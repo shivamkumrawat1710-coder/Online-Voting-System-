@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Portal</title>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h2>SecureVote</h2>
+        <a href="LandingPage.html" class="back-btn">← Back to Home</a>
+    </nav>
+
+    <div class="login-container">
+        <p class="instruction-text">Please select your login type to proceed.</p>
+
+        <form id="loginForm">
+            <div class="select-wrapper">
+                <select id="userRole" required>
+                    <option value="" disabled selected>Select Login Type</option>
+                    <option value="Admin.html">Admin Login</option>
+                    <option value="VoterLogin.html">Voter Login</option>
+                </select>
+            </div>
+
+            <button type="submit" class="confirm-btn">Confirm Selection</button>
+        </form>
+    </div>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden; /* SCROLL FIX */
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(to right, #5d5de8, #b10b72, #9a93dc);
+            padding: 20px;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            background: white;
+            color: #5d5de8;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Login Card */
+        .login-container {
+            background-color: rgb(52, 23, 66);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .instruction-text {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+
+        .select-wrapper {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .confirm-btn:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+            }
+
+            .instruction-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+            let selectedPage = document.getElementById("userRole").value;
+
+            if (selectedPage) {
+                window.location.href = selectedPage;
+            }
+
+        });
+    </script>
+
+</body>
+
+</html>

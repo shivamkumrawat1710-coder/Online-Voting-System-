@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #dfe9f3, #ffffff);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #2c3e50;
+            color: white;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar li {
+            list-style: none;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: 0.3s;
+        }
+
+        .sidebar li:hover {
+            background: #34495e;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            margin-top: 5px;
+            background: #34495e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dropdown-menu div {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu div:hover {
+            background: #3d566e;
+        }
+
+        .main {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .approve {
+            background: #2ecc71;
+        }
+
+        .deny {
+            background: #e74c3c;
+        }
+
+        .progress {
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 12px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+
+        .result-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .result-box img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 3px solid #2ecc71;
+        }
+
+        .time-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeUp 0.8s ease;
+        }
+
+        .time-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .time-box input {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            width: 80%;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .time-btn {
+            margin-top: 20px;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #00c853, #64dd17);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .time-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #00e676;
+        }
+
+        #countdown,
+        #scheduleCountdown {
+            margin-top: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+
+        <ul>
+            <li onclick="show('requests')">📩 Requests</li>
+            <li onclick="show('approved')">✅ Approved</li>
+            <li onclick="show('votes')">🗳 Vote Count</li>
+
+            <!-- 🔥 TIME DROPDOWN -->
+            <li class="dropdown" onclick="toggleTimeMenu()">⏳ Time</li>
+            <div id="timeMenu" class="dropdown-menu">
+                <div onclick="show('time')">⏳ Time Count</div>
+                <div onclick="show('schedule')">📅 Schedule Election</div>
+            </div>
+
+            <li onclick="show('result')">🏆 Result</li>
+
+            <li class="dropdown" onclick="toggleMenu()">⚙️ Options</li>
+            <div id="dropdownMenu" class="dropdown-menu">
+                <div onclick="resetElection()">🔄 Reset Election</div>
+                <div onclick="logout()">🚪 Logout</div>
+            </div>
+
+        </ul>
+    </div>
+
+    <div class="main">
+
+        <div id="requests">
+            <table>
+                <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Party</th>
+                    <th>Age</th>
+                    <th>Contact</th>
+                    <th>Aadhar</th>
+                    <th>Gender</th>
+                    <th>Constituency</th>
+                    <th>Action</th>
+                </tr>
+                <tbody id="requestTable"></tbody>
+            </table>
+        </div>
+
+        <div id="approved" style="display:none">
+            <table>
+                <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Party</th>
+                    <th>Age</th>
+                    <th>Contact</th>
+                    <th>Aadhar</th>
+                    <th>Gender</th>
+                    <th>Constituency</th>
+                </tr>
+                <tbody id="approvedTable"></tbody>
+            </table>
+        </div>
+
+        <div id="votes" style="display:none">
+            <table>
+                <tr>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Votes</th>
+                    <th>Progress</th>
+                </tr>
+                </tr>
+                <tbody id="voteTable"></tbody>
+            </table>
+        </div>
+
+        <!-- TIME COUNT (UNCHANGED) -->
+        <div id="time" style="display:none">
+            <div class="time-box">
+                <h2>⏳ Set Election End Time</h2>
+                <input type="datetime-local" id="dateTime">
+                <br>
+                <button class="time-btn" onclick="startTimer()">Start Countdown</button>
+                <h2 id="countdown">00d 00h 00m 00s</h2>
+            </div>
+        </div>
+
+        <!-- 🔥 NEW SCHEDULE SECTION -->
+        <div id="schedule" style="display:none">
+            <div class="time-box">
+                <h2>📅 Schedule Election</h2>
+                <input type="datetime-local" id="scheduleDateTime">
+                <br>
+                <button class="time-btn" onclick="startSchedule()">Start Schedule</button>
+                <h2 id="scheduleCountdown">00d 00h 00m 00s</h2>
+            </div>
+        </div>
+
+        <div id="result" style="display:none">
+            <div class="result-box" id="resultBox">
+                <h2>No result yet</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+        function show(section) {
+            ["requests", "approved", "votes", "result", "time", "schedule"].forEach(id => {
+                document.getElementById(id).style.display = "none";
+            });
+            document.getElementById(section).style.display = "block";
+
+            if (section === "votes") loadVotes();
+            if (section === "result") loadResult();
+        }
+
+        let requests = JSON.parse(localStorage.getItem("candidateRequests")) || [];
+        let approved = JSON.parse(localStorage.getItem("approvedCandidates")) || [];
+        let votes = JSON.parse(localStorage.getItem("votes")) || {};
+
+
+        function loadRequests() {
+            let table = document.getElementById("requestTable");
+            table.innerHTML = "";
+            requests.forEach((c, i) => {
+                table.innerHTML += `
+<tr>
+<td><img src="${c.photo}"></td>
+<td>${c.name}</td>
+<td>${c.party}</td>
+<td>${c.age}</td>
+<td>${c.contact}</td>
+<td>${c.aadhar}</td>
+<td>${c.gender}</td>
+<td>${c.constituency}</td>
+<td>
+<button class="approve" onclick="approve(${i})">Approve</button>
+<button class="deny" onclick="deny(${i})">Deny</button>
+</td>
+</tr>`;
+            });
+        }
+
+        function loadApproved() {
+            let table = document.getElementById("approvedTable");
+            table.innerHTML = "";
+            approved.forEach(c => {
+                table.innerHTML += `
+<tr>
+<td><img src="${c.photo}"></td>
+<td>${c.name}</td>
+<td>${c.party}</td>
+<td>${c.age}</td>
+<td>${c.contact}</td>
+<td>${c.aadhar}</td>
+<td>${c.gender}</td>
+<td>${c.constituency}</td>
+</tr>`;
+            });
+        }
+
+        function approve(i) {
+            approved.push(requests[i]);
+            requests.splice(i, 1);
+            localStorage.setItem("candidateRequests", JSON.stringify(requests));
+            localStorage.setItem("approvedCandidates", JSON.stringify(approved));
+            loadRequests(); loadApproved();
+        }
+
+        function deny(i) {
+            requests.splice(i, 1);
+            localStorage.setItem("candidateRequests", JSON.stringify(requests));
+            loadRequests();
+        }
+
+        function loadVotes() {
+            let table = document.getElementById("voteTable");
+            table.innerHTML = "";
+            let total = 0;
+            for (let name in votes) { total += votes[name]; }
+
+            approved.forEach(c => {
+                let count = votes[c.name] || 0;
+                let percent = total ? (count / total) * 100 : 0;
+
+                // 🔥 voter list filter
+                let voters = voteDetails.filter(v => v.candidate === c.name);
+
+                if (voters.length === 0) {
+                    table.innerHTML += `
+<tr>
+<td>${c.name}</td>
+<td>${count}</td>
+<td>
+<div class="progress">
+<div class="progress-bar" style="width:${percent}%"></div>
+</div>
+</td>
+<td>-</td>
+<td>-</td>
+</tr>`;
+                }
+                else {
+                    voters.forEach(v => {
+                        table.innerHTML += `
+<tr>
+<td>${c.name}</td>
+<td>${count}</td>
+<td>
+<div class="progress">
+<div class="progress-bar" style="width:${percent}%"></div>
+</div>
+</td>
+<td>${v.name}</td>
+<td>${v.roll}</td>
+</tr>`;
+                    });
+                }
+
+            });
+        }
+
+        approved.forEach(c => {
+            let count = votes[c.name] || 0;
+            let percent = total ? (count / total) * 100 : 0;
+
+            table.innerHTML += `
+<tr>
+<td>${c.name}</td>
+<td>${count}</td>
+<td>
+<div class="progress">
+<div class="progress-bar" style="width:${percent}%"></div>
+</div>
+</td>
+</tr>`;
+        });
+
+
+        function loadResult() {
+            let max = 0;
+            let winners = [];
+            approved.forEach(c => {
+                let count = votes[c.name] || 0;
+                if (count > max) { max = count; winners = [c]; }
+                else if (count === max) { winners.push(c); }
+            });
+
+            let box = document.getElementById("resultBox");
+
+            if (max === 0) {
+                box.innerHTML = "<h2>No votes yet</h2>";
+                return;
+            }
+
+            let html = "";
+            if (winners.length > 1) { html += `<h2>🤝 Tie Between Winners</h2>`; }
+
+            winners.forEach(w => {
+                html += `
+<img src="${w.photo}">
+<h2>🏆 ${w.name}</h2>
+<p>${w.party}</p>
+<h3>${max} Votes</h3><br>`;
+            });
+
+            box.innerHTML = html;
+        }
+
+        /* TIME */
+        let timer;
+        function startTimer() {
+            let input = document.getElementById("dateTime").value;
+            if (!input) { alert("Select date & time"); return; }
+            localStorage.setItem("endTime", input);
+            runTimer();
+        }
+
+        function runTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                let end = new Date(localStorage.getItem("endTime")).getTime();
+                let now = new Date().getTime();
+                let diff = end - now;
+
+                if (diff <= 0) {
+                    clearInterval(timer);
+                    document.getElementById("countdown").innerText = "Time Over ⏳";
+                    return;
+                }
+
+                let d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                let h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                let s = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById("countdown").innerText =
+                    `${d}d ${h}h ${m}m ${s}s`;
+            }, 1000);
+        }
+
+        /* SCHEDULE */
+        let scheduleTimer;
+        function startSchedule() {
+            let input = document.getElementById("scheduleDateTime").value;
+            if (!input) { alert("Select date & time"); return; }
+            localStorage.setItem("scheduleTime", input);
+            runSchedule();
+        }
+
+        function runSchedule() {
+            clearInterval(scheduleTimer);
+            scheduleTimer = setInterval(() => {
+                let end = new Date(localStorage.getItem("scheduleTime")).getTime();
+                let now = new Date().getTime();
+                let diff = end - now;
+
+                if (diff <= 0) {
+                    clearInterval(scheduleTimer);
+                    document.getElementById("scheduleCountdown").innerText = "Time Over ⏳";
+                    return;
+                }
+
+                let d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                let h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                let s = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById("scheduleCountdown").innerText =
+                    `${d}d ${h}h ${m}m ${s}s`;
+            }, 1000);
+        }
+
+        /* DROPDOWNS */
+        function toggleTimeMenu() {
+            let menu = document.getElementById("timeMenu");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+
+        function toggleMenu() {
+            let menu = document.getElementById("dropdownMenu");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+
+        function resetElection() {
+            if (!confirm("Reset all data?")) return;
+            localStorage.clear();
+            alert("Election Reset!");
+            location.reload();
+        }
+
+        function logout() {
+            window.location.href = "Admin.html";
+        }
+
+        if (localStorage.getItem("endTime")) runTimer();
+        if (localStorage.getItem("scheduleTime")) runSchedule();
+
+        loadRequests();
+        loadApproved();
+
+    </script>
+
+</body>
+
+</html>

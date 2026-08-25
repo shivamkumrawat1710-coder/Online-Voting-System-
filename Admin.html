@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* 🔥 scroll completely removed */
+            background: linear-gradient(to right, #5d5de8, #b10b72, #9a93dc);
+            margin: 0;
+            position: relative;
+        }
+
+        /* ===== TOP BAR FIXED CORNER ===== */
+        .brand {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4d4d;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px #ff4d4d;
+        }
+
+        /* ===== MAIN BOX (YOUR ORIGINAL DESIGN) ===== */
+        .main {
+            background-color: rgb(52, 23, 66);
+            padding: 60px 40px;
+            width: 100%;
+            max-width: 400px;
+            border: 2px solid black;
+            border-radius: 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main:hover {
+            transform: scale(1.05);
+            transition: 0.5s;
+            box-shadow: 6px 6px 15px rgb(172, 5, 232);
+        }
+
+        h2 {
+            margin-bottom: 45px;
+            color: white;
+            text-align: center;
+            font-size: 28px;
+            width: 100%;
+        }
+
+        h2:hover {
+            transform: scale(1.05);
+            transition: 0.5s;
+            box-shadow: 5px 5px 10px rgb(232, 100, 5);
+            color: rgb(56, 226, 13);
+            padding: 10px 0;
+            border-radius: 30px;
+        }
+
+        .A,
+        .B {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .B {
+            padding-top: 12px;
+            margin-top: 10px;
+        }
+
+        .comm {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px 20px;
+            font: 1em sans-serif;
+            border-radius: 10px;
+            border: none;
+        }
+
+        .comm:hover {
+            transform: scale(1.05);
+            transition: 0.5s;
+            box-shadow: 5px 5px 10px rgb(5, 232, 224);
+        }
+
+        button.submit-btn {
+            background: #03e9f4;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 5px;
+            color: #050801;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.5s;
+            text-transform: uppercase;
+            margin-top: 35px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button.submit-btn:hover {
+            box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4;
+            transform: translateY(-2px);
+        }
+
+        .toggle {
+            margin-top: 20px;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* ===== MOBILE FIX ===== */
+        @media (max-width: 480px) {
+            .main {
+                width: 90%;
+                padding: 40px 20px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            .brand {
+                font-size: 18px;
+            }
+
+            .back-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="brand">SecureVote</div>
+    <button class="back-btn" onclick="window.location.href='LandingPage.html'">Back</button>
+
+    <div class="main">
+        <h2 id="title">Admin Login</h2>
+
+        <form id="form">
+            <div class="A">
+                <input class="comm" type="text" id="username" placeholder="Admin Name" required>
+            </div>
+
+            <div class="B">
+                <input class="comm" type="password" id="password" placeholder="Enter Password" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Enter Portal</button>
+        </form>
+
+        <div class="toggle" onclick="toggleForm()">
+            Don't have account? Sign Up
+        </div>
+    </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("form");
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault(); // form reload rokega
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        console.log(username, password); // 🔥 check karne ke liye
+
+        // ✅ Dummy login (change kar sakte ho)
+        if (username === "Only Admins" && password === "111205") {
+
+            alert("Login Successful ✅");
+
+            // 🔥 redirect
+            window.location.href = "./adminDashboard.html";
+
+        } else {
+            alert("Invalid Admin Credentials ❌");
+        }
+    });
+
+});
+</script>
+
+</body>
+
+</html>
