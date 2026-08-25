@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureVote - Online Voting System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background: linear-gradient(to right, #5d5de8, #b10b72, #9a93dc);
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 🔥 TOP NOTIFICATION */
+        .notice-bar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 16px 35px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            z-index: 999;
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        /* 🔥 POPUP */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .popup-box {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 300px;
+            animation: scaleUp 0.4s ease;
+        }
+
+        .popup-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .popup-box button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .yes-btn {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .no-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        @keyframes scaleUp {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            flex-wrap: wrap;
+        }
+
+        nav h2 {
+            font-size: 27px;
+        }
+
+        nav div {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: blue;
+            margin-left: 25px;
+            font-weight: 600;
+            background-color: aliceblue;
+        }
+
+        nav .btn {
+            padding: 8px 18px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        /* Hero */
+        .hero {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            flex-direction: column;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            max-width: 600px;
+            font-size: 18px;
+            margin-bottom: 35px;
+            line-height: 1.6;
+        }
+
+        .hero button {
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: white;
+            color: #5d5de8;
+            transition: 0.3s ease;
+            margin: 8px;
+        }
+
+        .hero button:hover {
+            transform: translateY(-3px);
+        }
+
+        .hero button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hero img {
+            margin-top: 25px;
+        }
+
+        @media(max-width: 768px) {
+            nav {
+                padding: 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 🔥 TOP MESSAGE -->
+    <div id="noticeBar" class="notice-bar" style="display:none;"></div>
+
+    <!-- 🔥 POPUP -->
+    <div id="popup" class="popup-overlay">
+        <div class="popup-box">
+            <h2>Are you 18+ ?</h2>
+            <button class="yes-btn" onclick="confirmYes()">Yes</button>
+            <button class="no-btn" onclick="confirmNo()">No</button>
+        </div>
+    </div>
+
+    <nav>
+        <h2>SecureVote</h2>
+        <div>
+            <a href="#" class="btn">Home</a>
+            <a href="Admin.html" class="btn">Admin Login</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Secure & Transparent Online Voting System</h1>
+        <p>
+            A modern digital platform for conducting elections securely,
+            transparently, and efficiently with real-time results.
+        </p>
+
+        <button id="voteBtn" onclick="openPopup()">Want to Vote</button>
+        <button onclick="goToCandidate()">Want to Participate</button>
+        <button id="resultBtn" onclick="goToResults()">See Election Results</button>
+
+        <img src="logo.shi.png" alt="LOGO" width="300px" height="300px">
+    </section>
+
+    <script>
+
+        let voteBtn = document.getElementById("voteBtn");
+        let resultBtn = document.getElementById("resultBtn");
+        let noticeBar = document.getElementById("noticeBar");
+        let popup = document.getElementById("popup");
+
+        // 🔥 POPUP FUNCTIONS
+        function openPopup() {
+            popup.style.display = "flex";
+        }
+
+        function confirmYes() {
+            popup.style.display = "none";
+            window.location.href = "VoterLogin.html";
+        }
+
+        function confirmNo() {
+            popup.style.display = "none";
+            alert("You are not eligible to vote");
+        }
+
+        // 🔥 SCHEDULE CHECK
+        function checkElection() {
+
+            let scheduleTime = localStorage.getItem("scheduleTime");
+            if (!scheduleTime) return;
+
+            let now = new Date().getTime();
+            let start = new Date(scheduleTime).getTime();
+
+            if (now < start) {
+                voteBtn.disabled = true;
+                resultBtn.disabled = true;
+
+                noticeBar.style.display = "block";
+
+                let d = new Date(scheduleTime);
+
+                let day = d.toLocaleDateString('en-US', { weekday: 'long' });
+                let date = d.toLocaleDateString();
+                let time = d.toLocaleTimeString();
+
+                noticeBar.innerHTML =
+                    `📢 The election will be held on <b>${day}</b>, ${date} at ${time}`;
+
+            } else {
+                voteBtn.disabled = false;
+                resultBtn.disabled = false;
+                noticeBar.style.display = "none";
+            }
+        }
+
+        setInterval(checkElection, 1000);
+        checkElection();
+
+        function goToCandidate() {
+            window.location.href = "addcandidate.html";
+        }
+
+        function goToResults() {
+            window.location.href = "results.html";
+        }
+
+    </script>
+
+</body>
+
+</html>
